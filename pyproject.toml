@@ -1,0 +1,151 @@
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "cookie-python"
+version = "0.0.1"
+description = ""
+license = "GPL-3.0-or-later"
+authors = ["Stephen Kent <smkent@smkent.net>"]
+readme = "README.md"
+repository = "https://github.com/smkent/cookie-python"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+packages = [
+    { include = "{{cookiecutter.project_name}}" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+poetry-dynamic-versioning = "^0.13.1"
+
+[tool.poetry.dev-dependencies]
+bandit = "*"
+black = "*"
+build = "*"
+cruft = "*"
+flake8 = "*"
+flake8-bugbear = "*"
+flake8-pyproject = "*"
+flake8-simplify = "*"
+isort = "*"
+mypy = "*"
+pep8-naming = "*"
+poethepoet = "*"
+pytest = "*"
+pytest-cookies = "*"
+pytest-cov = "*"
+pytest-github-actions-annotate-failures = "*"
+pytest-sugar = "*"
+pyyaml = "*"
+tox = "*"
+types-PyYAML = "*"
+
+[tool.poetry.scripts]
+new-cookie = "cookie_python.main:main"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
+
+[tool.poe.env]
+PROJECT_CODE_DIRS="cookie_python/ hooks/ tests/"
+
+[tool.poe.tasks]
+flake8 = { cmd = "flake8", help = "Check code style with flake8" }
+mypy = { cmd = "mypy", help = "Check types with mypy" }
+pytest = { cmd = "pytest", help = "Run unit tests with pytest" }
+
+[tool.poe.tasks.bandit]
+cmd = "bandit -c pyproject.toml -q -r $(echo \"${PROJECT_CODE_DIRS}\" | sed 's:tests/::')"
+help = "Perform security analysis with bandit"
+
+[tool.poe.tasks.black]
+cmd = "black -l 79 --check --diff --color -- ${PROJECT_CODE_DIRS}"
+help = "Check code formatting with black"
+
+[tool.poe.tasks.black_lint]
+cmd = "black -l 79 -- ${PROJECT_CODE_DIRS}"
+help = "Reformat code with black"
+
+[tool.poe.tasks.isort]
+cmd = "isort --check-only --diff -- ${PROJECT_CODE_DIRS}"
+help = "Check imports order with isort"
+
+[tool.poe.tasks.isort_lint]
+cmd = "isort -- ${PROJECT_CODE_DIRS}"
+help = "Reformat code with black"
+
+[tool.poe.tasks.lt]
+sequence = ["lint", "test"]
+help = "Run all linters and all tests"
+
+[tool.poe.tasks.lint]
+sequence = ["isort_lint", "black_lint"]
+help = "Run linters"
+
+[tool.poe.tasks.test]
+sequence = ["flake8", "isort", "black", "mypy", "bandit", "pytest"]
+help = "Run all tests"
+
+[tool.poe.tasks.create]
+cmd = "new-cookie"
+help = "Create new project from cookie-python template"
+
+[tool.poe.tasks.updatetests]
+cmd = "pytest --update-expected-outputs"
+help = "Update test expected output files from test results"
+
+[tool.bandit]
+skips = ["B101"]  # assert_used
+
+[tool.flake8]
+exclude = "./.*,./{{cookiecutter.project_name}}"
+
+[tool.isort]
+atomic = true
+profile = "black"
+line_length = 79
+
+[tool.mypy]
+files = ["tests"]
+mypy_path = "types"
+disallow_untyped_defs = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_return_any = true
+show_error_codes = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--junitxml=.pytest_results.xml"
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py310
+isolated_build = True
+requires =
+    tox-poetry-installer[poetry] == 0.6.0
+
+[testenv]
+deps =
+    poetry
+commands =
+    poetry install
+    poetry run poe test
+
+[gh-actions]
+python =
+    3.10: py310
+"""
+
+# vim: ft=cfg
