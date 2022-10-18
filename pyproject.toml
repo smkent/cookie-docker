@@ -3,22 +3,19 @@ requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "cookie-python"
+name = "cookie-docker"
 version = "0.0.1"
 description = ""
 license = "GPL-3.0-or-later"
 authors = ["Stephen Kent <smkent@smkent.net>"]
 readme = "README.md"
-repository = "https://github.com/smkent/cookie-python"
+repository = "https://github.com/smkent/cookie-docker"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Code Generators",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
-]
-packages = [
-    { include = "{{cookiecutter.project_name}}" }
 ]
 
 [tool.poetry.dependencies]
@@ -48,7 +45,7 @@ tox = "*"
 types-PyYAML = "*"
 
 [tool.poetry.scripts]
-new-cookie = "cookie_python.main:main"
+new-cookie = "cookie_docker.main:main"
 
 [tool.poetry-dynamic-versioning]
 enable = true
@@ -56,7 +53,7 @@ vcs = "git"
 style = "semver"
 
 [tool.poe.env]
-PROJECT_CODE_DIRS="cookie_python/ hooks/ tests/"
+PROJECT_CODE_DIRS="cookie_docker/ hooks/ tests/"
 
 [tool.poe.tasks]
 flake8 = { cmd = "flake8", help = "Check code style with flake8" }
@@ -97,7 +94,7 @@ help = "Run all tests"
 
 [tool.poe.tasks.create]
 cmd = "new-cookie"
-help = "Create new project from cookie-python template"
+help = "Create new project from cookie-docker template"
 
 [tool.poe.tasks.updatetests]
 cmd = "pytest --update-expected-outputs"

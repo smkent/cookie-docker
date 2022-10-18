@@ -1,6 +1,5 @@
 {
     "project_name": "",
-    "project_slug": "{{ cookiecutter.project_name|lower|replace('-', '_') }}",
     "project_description": "",
     "project_license": [
         "GPL-3.0-or-later",
@@ -10,8 +9,6 @@
         "BSD-3-Clause",
         "MIT"
     ],
-    "enable_coverage": "yes",
-    "enable_pypi_publish": "no",
     "author_name": "",
     "author_email": "",
     "github_user": ""

@@ -8,7 +8,7 @@ from unittest import mock
 
 import pytest
 
-from cookie_python.main import main
+from cookie_docker.main import main
 
 
 @pytest.fixture
@@ -47,7 +47,3 @@ def test_new_cookie_create(temp_dir: str) -> None:
         .decode("utf-8")
         .strip()
     ), "Untracked files present in template-rendered project"
-    subprocess.check_call(["poetry", "install"], cwd=project_dir)
-    subprocess.check_call(
-        ["poetry", "run", "cruft", "diff", "--exit-code"], cwd=project_dir
-    )

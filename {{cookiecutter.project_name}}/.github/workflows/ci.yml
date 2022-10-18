@@ -1,58 +1,51 @@
----
-name: Test
-
 env:
-  ENABLE_COVERAGE: {{ "true" if cookiecutter.enable_coverage|lower == "yes" else "false" }}
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ "{{" }} github.repository }}
 
 on:
   pull_request:
   push:
     branches:
-      - main
+      - '*'
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 jobs:
-  Test:
-    name: Python ${{ "{{" }} matrix.python-version }}, Poetry ${{ "{{" }} matrix.poetry-version }}
+  Build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
-    strategy:
-      matrix:
-        os:
-          - Ubuntu
-        python-version:
-          - "3.8"
-          - "3.9"
-          - "3.10"
-        poetry-version:
-          - "1.1"
-
-    runs-on: ${{ "{{" }} matrix.os }}-latest
     steps:
       - name: 💾 Check out repository
         uses: actions/checkout@v3
 
-      - name: 🐍 Set up Python project with Poetry
-        uses: ./.github/workflows/actions/python-poetry
+      - name: 🔑 Log in to the container registry
+        uses: docker/login-action@v2.1.0
         with:
-          python_version: ${{ "{{" }} matrix.python-version }}
-          poetry_version: ${{ "{{" }} matrix.poetry-version }}
+          registry: ${{ "{{" }} env.REGISTRY }}
+          username: ${{ "{{" }} github.actor }}
+          password: ${{ "{{" }} secrets.GITHUB_TOKEN }}
 
-      - name: 🔥 Test
-        run: poetry run poe test
-
-      - name: 🚒 Create test summary
-        uses: test-summary/action@v1
-        if: success() || failure()
+      - name: 📡 Collect image metadata
+        id: meta
+        uses: docker/metadata-action@v4.1.1
         with:
-          paths: ./.pytest_results.xml
+          images: ${{ "{{" }} env.REGISTRY }}/${{ "{{" }} env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{ "{{" }}raw}}
+            type=semver,pattern=v{{ "{{" }}major}}.{{ "{{" }}minor}}
+            type=semver,pattern=v{{ "{{" }}major}}
+            type=edge,branch=main
 
-      - name: 📊 Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-        if: ${{ "{{" }} env.ENABLE_COVERAGE == 'true' }}
+      - name: 📦 Build and publish container image
+        uses: docker/build-push-action@v3.2.0
         with:
-          fail_ci_if_error: true
-          files: ./.pytest_coverage.xml
-
-concurrency:
-  group: ${{ "{{" }} github.workflow }}-${{ "{{" }} github.ref }}
-  cancel-in-progress: false
+          context: .
+          push: ${{ "{{" }} github.event_name != 'pull_request' }}
+          tags: ${{ "{{" }} steps.meta.outputs.tags }}
+          labels: ${{ "{{" }} steps.meta.outputs.labels }}

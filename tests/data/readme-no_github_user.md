@@ -2,17 +2,12 @@
 
 ## Development
 
-Prerequisites: [Poetry][poetry]
-
-* Setup: `poetry install`
-* Run all tests: `poetry run poe test`
-* Fix linting errors: `poetry run poe lint`
+* Build: `docker build .`
 
 ---
 
-Created from [smkent/cookie-python][cookie-python] using
+Created from [smkent/cookie-docker][cookie-docker] using
 [cookiecutter][cookiecutter]
 
-[cookie-python]: https://github.com/smkent/cookie-python
+[cookie-docker]: https://github.com/smkent/cookie-docker
 [cookiecutter]: https://github.com/cookiecutter/cookiecutter
-[poetry]: https://python-poetry.org/docs/#installation

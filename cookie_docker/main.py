@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 from typing import List, Tuple
 
-TEMPLATE_REPOSITORY_URL = "https://github.com/smkent/cookie-python"
+TEMPLATE_REPOSITORY_URL = "https://github.com/smkent/cookie-docker"
 
 
 def parse_args() -> Tuple[argparse.Namespace, List[str]]:
