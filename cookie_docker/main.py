@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 import subprocess
 import time
@@ -64,6 +65,14 @@ def locate_new_project(parent_dir: str) -> str:
 
 def commit_cruft_json(project_dir: str) -> None:
     new_project_dir = locate_new_project(project_dir)
+    # Add .git to the skip directories in .cruft.json
+    cruft_json_path = os.path.join(new_project_dir, ".cruft.json")
+    with open(cruft_json_path) as f:
+        cruft_json_data = json.load(f)
+    cruft_json_data.setdefault("skip", [])
+    cruft_json_data["skip"].append(".git")
+    with open(cruft_json_path, "w") as f:
+        json.dump(cruft_json_data, f, indent=2, sort_keys=True)
     subprocess.check_call(["git", "add", ".cruft.json"], cwd=new_project_dir)
     author_name, author_email = (
         subprocess.check_output(
