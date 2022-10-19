@@ -1,9 +1,5 @@
 # test-baked-cookie: This is a test project called "test-baked-cookie"
 
-## Development
-
-* Build: `docker build .`
-
 ---
 
 Created from [smkent/cookie-docker][cookie-docker] using
