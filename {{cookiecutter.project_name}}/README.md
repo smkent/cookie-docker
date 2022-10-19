@@ -3,10 +3,6 @@
 [![Build](https://img.shields.io/github/checks-status/{{ cookiecutter.github_user }}/{{ cookiecutter.project_name }}/main?label=build)][gh-actions]
 [![GitHub stars](https://img.shields.io/github/stars/{{ cookiecutter.github_user }}/{{ cookiecutter.project_name }}?style=social)][repo]
 {% endif %}
-## Development
-
-* Build: `docker build .`
-
 ---
 
 Created from [smkent/cookie-docker][cookie-docker] using

@@ -3,10 +3,6 @@
 [![Build](https://img.shields.io/github/checks-status/ness/test-baked-cookie/main?label=build)][gh-actions]
 [![GitHub stars](https://img.shields.io/github/stars/ness/test-baked-cookie?style=social)][repo]
 
-## Development
-
-* Build: `docker build .`
-
 ---
 
 Created from [smkent/cookie-docker][cookie-docker] using
